@@ -3,7 +3,7 @@ import org.specs2.mutable._
 
 class Chapter3Spec extends Specification {
   import List._
-
+  import Tree._
   "My List" should {
     val ls = List(1,2,3)
     val ls2 = List(4,5,6)
@@ -100,6 +100,31 @@ class Chapter3Spec extends Specification {
 
     "zip two lists by a function" in {
       zipWith(ls, ls2)((a,b) => a * b) === List(4, 10, 18)
+    }
+
+    "check for a subsequence" in {
+      hasSubsequence(ls, List(1,2)) === true
+      hasSubsequence(ls, List(2,3)) === true
+      hasSubsequence(ls, List(1,3)) === false
+    }
+  }
+
+  val tree: Tree[Int] = Branch(Branch(Leaf(1), Leaf(2)), Leaf(3))
+  "Tree" should {
+    "be able to count nodes" in {
+      Tree.size(tree) === 5
+    }
+
+    "be able to find max" in {
+      Tree.maximum(tree) === 3
+    }
+
+    "be able to find max depth" in {
+      Tree.depth(tree) === 2
+    }
+
+    "be able to map over a tree" in {
+      Tree.map(tree)((a: Int) => a + 1) === Branch(Branch(Leaf(2), Leaf(3)), Leaf(4))
     }
   }
 

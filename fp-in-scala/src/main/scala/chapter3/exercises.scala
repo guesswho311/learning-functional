@@ -143,4 +143,50 @@ object List {
     case (_, Nil) => Nil
     case (Cons(h1,t1), Cons(h2, t2)) => Cons(f(h1, h2), zipWith(t1, t2)(f))
   }
+
+  def checkMatching[A](sup: List[A], sub: List[A]): Boolean = (sup, sub) match {
+    case (_, Nil) => true
+    case (Nil, _) => false
+    case (Cons(h1,t1), Cons(h2,t2)) if (h1 == h2) => checkMatching(t1, t2)
+    case (Cons(h1,t1), Cons(h2,t2)) => false
+  }
+
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = sup match {
+    case Nil => false
+    case Cons(h, t) if (checkMatching(sup, sub)) => true
+    case Cons(h, t) => hasSubsequence(t, sub)
+  }
+}
+
+
+sealed trait Tree[+A]
+case class Leaf[A](value: A) extends Tree[A]
+case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
+
+object Tree {
+  def size[A](t: Tree[A]): Int = t match {
+    case Leaf(a) => 1
+    case Branch(l, r) => 1 + size(l) + size(r)
+  }
+
+  def max(a: Int, b: Int): Int = {
+    if (a >= b)
+      a
+    else b
+  }
+
+  def maximum(t: Tree[Int]): Int = t match {
+    case Leaf(a) => a
+    case Branch(l, r) => maximum(l) max maximum(r)
+  }
+
+  def depth[A](t: Tree[A]): Int = t match {
+    case Leaf(_) => 0
+    case Branch(l, r) => 1 + (depth(l) max depth(r))
+  }
+
+  def map[A, B](t: Tree[A])(f: A => B): Tree[B] = t match {
+    case Leaf(a) => Leaf(f(a))
+    case Branch(l, r) => Branch(map(l)(f), map(r)(f))
+  }
 }
